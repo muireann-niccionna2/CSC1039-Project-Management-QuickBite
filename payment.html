@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite – Checkout</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="payment-page">
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="menu.html" class="nav-brand">
+      <span class="nav-logo">
+        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="payment.html" aria-current="page">Payment</a>
+      <a href="login.html">Log in</a>
+    </div>
+  </nav>
+ 
+  <main class="card">
+ 
+    <!-- PART 1: Summary and Pay button -->
+    <div id="checkoutView">
+      <h1>Checkout</h1>
+      <div id="summary"></div>
+      <div class="total">
+        <span>Total</span>
+        <span id="total">€0.00</span>
+      </div>
+      <button class="pay" id="payBtn">Pay</button>
+      <p class="note">Demo only: no real payment is taken.</p>
+      <a href="cart.html" class="link">Back to cart</a>
+    </div>
+ 
+    <!-- PART 2: Confirmation (hidden until Pay is clicked) -->
+    <div id="confirmView" class="confirm hidden" role="status">
+      <div class="tick">&#10003;</div>
+      <h1>Order placed!</h1>
+      <p>Your order number is</p>
+      <div class="order-number" id="orderNumber"></div>
+      <p>We'll let you know when it's ready to collect.</p>
+      <a href="menu.html" class="link">Back to menu</a>
+    </div>
+ 
+    <!-- If the cart is empty -->
+    <div id="emptyView" class="empty-view hidden">
+      <h1>Checkout</h1>
+      <p>Your cart is empty.</p>
+      <a href="menu.html" class="link">Go to the menu</a>
+    </div>
+ 
+  </main>
+ 
+  <script src="scripts.js" defer></script>
+ 
+</body>
+</html>

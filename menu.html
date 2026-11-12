@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite Menu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="menu-page">
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="menu.html" class="nav-brand">
+      <span class="nav-logo">
+        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="menu.html" aria-current="page">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="payment.html">Payment</a>
+      <a href="login.html">Log in</a>
+    </div>
+  </nav>
+
+    <header>
+        <h1>QuickBite</h1>
+        <p>Today's Cafe Menu</p>
+    </header>
+
+    <main>
+        <a href="cart.html" class="cart-link">View cart (<span id="cartCount">0</span>)</a>
+        <h2>Food and Drinks</h2>
+
+        <div id="menu"></div>
+        <p id="menuMessage" class="message" role="status"></p>
+    </main>
+
+    <script src="scripts.js" defer></script>
+
+</body>
+</html>

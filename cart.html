@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite – Your cart</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="cart-page">
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="menu.html" class="nav-brand">
+      <span class="nav-logo">
+        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="menu.html">Menu</a>
+      <a href="cart.html" aria-current="page">Cart</a>
+      <a href="payment.html">Payment</a>
+      <a href="login.html">Log in</a>
+    </div>
+  </nav>
+
+  <main class="card">
+    <h1>Your cart</h1>
+    <p class="note">Check your items before paying.</p>
+
+    <div id="cartView">
+      <div id="cartItems"></div>
+      <div class="total" aria-live="polite">
+        <span>Total</span>
+        <span id="cartTotal">€0.00</span>
+      </div>
+      <a href="payment.html" class="pay">Continue to payment</a>
+    </div>
+
+    <div id="emptyCart" class="empty-view hidden">
+      <p>Your cart is empty.</p>
+      <p>Add something from the menu to get started.</p>
+    </div>
+
+    <a href="menu.html" class="link">Back to menu</a>
+  </main>
+
+  <script src="scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite – Log in</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="menu.html" class="nav-brand">
+      <span class="nav-logo">
+        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="payment.html">Payment</a>
+      <a href="login.html" aria-current="page">Log in</a>
+    </div>
+  </nav>
+
+  <main class="login-content">
+    <div class="card">
+      <h1>QuickBite</h1>
+      <p class="tagline">Order ahead. Skip the queue.</p>
+
+      <!-- Tabs to switch between the two forms -->
+      <div class="tabs">
+        <button id="loginTab" class="active">Log in</button>
+        <button id="signupTab">Sign up</button>
+      </div>
+
+      <!-- LOG IN FORM -->
+      <form id="loginForm">
+        <label>Student email
+          <input type="email" id="loginEmail" placeholder="name@mail.dcu.ie" required>
+        </label>
+        <label>Password
+          <input type="password" id="loginPassword" required>
+        </label>
+        <button type="submit" class="submit">Log in</button>
+      </form>
+
+      <!-- SIGN UP FORM (hidden until the Sign up tab is clicked) -->
+      <form id="signupForm" class="hidden">
+        <label>Full name
+          <input type="text" id="signupName" required>
+        </label>
+        <label>Student email
+          <input type="email" id="signupEmail" placeholder="name@mail.dcu.ie" required>
+        </label>
+        <label>Password (at least 6 characters)
+          <input type="password" id="signupPassword" required>
+        </label>
+        <label>Confirm password
+          <input type="password" id="signupConfirm" required>
+        </label>
+        <button type="submit" class="submit">Create account</button>
+      </form>
+
+      <p id="message" class="message"></p>
+    </div>
+
+  </main>
+
+  <script src="scripts.js" defer></script>
+
+</body>
+</html>
