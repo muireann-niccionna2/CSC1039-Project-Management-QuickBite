@@ -354,6 +354,42 @@ function initStaffLogin() {
  
   document.getElementById("loginForm").addEventListener("submit", logIn);
 }
+// ========== Home page ==========
+ 
+function initHome() {
+  // If someone is already logged in, offer a shortcut so they don't have to log in again.
+  const message = document.getElementById("continueMessage");
+ 
+  function readUser(name) {
+    try {
+      return JSON.parse(localStorage.getItem(name));
+    } catch (e) {
+      return null;
+    }
+  }
+ 
+  const staff = readUser("qb_currentStaff");
+  const student = readUser("qb_currentUser");
+ 
+  let text = "";
+  let link = "";
+  if (staff) {
+    text = "Logged in as " + staff.name + " (staff). ";
+    link = "orders.html";
+  } else if (student) {
+    text = "Logged in as " + student.name + ". ";
+    link = "menu.html";
+  }
+ 
+  if (link) {
+    message.textContent = text;
+    const continueLink = document.createElement("a");
+    continueLink.href = link;
+    continueLink.textContent = "Continue →";
+    message.appendChild(continueLink);
+    message.classList.remove("hidden");
+  }
+}
 // ========== Page initialization ==========
 
 if (document.body.classList.contains("staff-login-page")) {
@@ -365,4 +401,9 @@ if (document.body.classList.contains("staff-login-page")) {
   initCart();
 } else if (document.body.classList.contains("payment-page")) {
   initCheckout();
+}
+ else if (document.body.classList.contains("payment-page")) {
+  initCheckout();
+} else if (document.body.classList.contains("home-page")) {
+  initHome();
 }

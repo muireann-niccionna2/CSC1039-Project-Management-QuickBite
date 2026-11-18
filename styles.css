@@ -484,6 +484,81 @@ body.payment-page {
 .payment-page .line span:last-child {
   flex-shrink: 0;
 }
+/* ========== Home page (student / staff choice) ========== */
+ 
+body.home-page {
+  background: var(--page);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+ 
+.home-page .home-content {
+  flex: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 40px 16px;
+  text-align: center;
+}
+ 
+.home-page h1 {
+  color: var(--main);
+  margin: 0 0 6px;
+}
+ 
+.home-page .tagline {
+  color: var(--muted);
+  margin: 0 0 28px;
+}
+ 
+.home-page .choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+ 
+.home-page .choice-card,
+.home-page .choice-card:visited {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--shadow);
+  color: var(--text);
+  text-decoration: none;
+}
+ 
+.home-page .choice-card:hover {
+  border-color: var(--main);
+  background: var(--soft);
+  color: var(--text);
+}
+ 
+.home-page .choice-icon {
+  font-size: 44px;
+}
+ 
+.home-page .choice-title {
+  font-size: 20px;
+  color: var(--main);
+}
+ 
+.home-page .choice-text {
+  font-size: 14px;
+  color: var(--muted);
+}
+ 
+.home-page .continue {
+  margin-top: 24px;
+}
+ 
 
 /* ========== Shared utilities ========== */
 
