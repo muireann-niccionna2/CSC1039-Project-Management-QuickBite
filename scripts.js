@@ -319,13 +319,48 @@ function initCheckout() {
   document.getElementById("payBtn").addEventListener("click", pay);
   showSummary();
 }
-
+// ========== Staff log in ==========
+ 
+function initStaffLogin() {
+  // Staff don't sign up: the café manager creates their accounts.
+  // Prototype only: demo accounts with plain-text passwords.
+  const STAFF_ACCOUNTS = [
+    { name: "Aoife", email: "aoife@quickbite.ie", password: "cafe123" },
+    { name: "Conor", email: "conor@quickbite.ie", password: "cafe456" }
+  ];
+  const STAFF_HOME = "orders.html";
+ 
+  function showMessage(text, type) {
+    const message = document.getElementById("message");
+    message.textContent = text;
+    message.className = "message " + type;
+  }
+ 
+  function logIn(event) {
+    event.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const member = STAFF_ACCOUNTS.find(m => m.email === email && m.password === password);
+ 
+    if (!member) {
+      showMessage("Incorrect email or password.", "error");
+      return;
+    }
+ 
+    localStorage.setItem("qb_currentStaff", JSON.stringify({ name: member.name, email: member.email }));
+    showMessage("Welcome, " + member.name + "! Taking you to the orders...", "success");
+    setTimeout(() => { window.location.href = STAFF_HOME; }, 1000);
+  }
+ 
+  document.getElementById("loginForm").addEventListener("submit", logIn);
+}
 // ========== Page initialization ==========
 
-if (document.body.classList.contains("login-page")) {
+if (document.body.classList.contains("staff-login-page")) {
+  initStaffLogin();
+} else if (document.body.classList.contains("login-page")) {
   initLogin();
 } else if (document.body.classList.contains("menu-page")) {
-  initMenu();
 } else if (document.body.classList.contains("cart-page")) {
   initCart();
 } else if (document.body.classList.contains("payment-page")) {
