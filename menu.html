@@ -9,19 +9,24 @@
 
 <body class="menu-page">
 
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="menu.html" class="nav-brand">
-      <span class="nav-logo">
-        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
-      </span>
-    </a>
-    <div class="nav-links">
-      <a href="menu.html" aria-current="page">Menu</a>
-      <a href="cart.html">Cart</a>
-      <a href="payment.html">Payment</a>
-      <a href="login.html">Log in</a>
-    </div>
-  </nav>
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html" class="nav-brand">
+            <span class="nav-logo">
+                <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+            </span>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="menu.html" aria-current="page">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="payment.html">Payment</a>
+            <a href="see-orders.html">See orders</a>
+            <a href="prepare-orders.html">Prepare orders</a>
+            <a href="login.html">Student log in</a>
+            <a href="staff-login.html">Staff log in</a>
+        </div>
+    </nav>
 
     <header>
         <h1>QuickBite</h1>
@@ -29,11 +34,77 @@
     </header>
 
     <main>
-        <a href="cart.html" class="cart-link">View cart (<span id="cartCount">0</span>)</a>
-        <h2>Food and Drinks</h2>
 
-        <div id="menu"></div>
-        <p id="menuMessage" class="message" role="status"></p>
+        <a href="cart.html" class="cart-link">
+            View cart (<span id="cartCount">0</span>)
+        </a>
+
+        <section id="studentOrders" class="student-orders hidden" aria-labelledby="studentOrdersHeading">
+            <h2 id="studentOrdersHeading">Your orders</h2>
+            <div id="studentOrderList" class="order-grid" aria-live="polite"></div>
+        </section>
+
+        <!-- Allergy questions -->
+
+        <div id="allergy-section">
+
+            <h2>Do you have any food allergies?</h2>
+
+            <p>Please select any allergies you have.</p>
+            <p>If you have no allergies, leave everything unchecked.</p>
+
+            <label>
+                <input type="checkbox" name="allergy" value="milk">
+                Milk / Dairy
+            </label>
+
+            <label>
+                <input type="checkbox" name="allergy" value="eggs">
+                Eggs
+            </label>
+
+            <label>
+                <input type="checkbox" name="allergy" value="peanuts">
+                Peanuts
+            </label>
+
+            <label>
+                <input type="checkbox" name="allergy" value="wheat">
+                Wheat / Gluten
+            </label>
+
+            <label>
+                <input type="checkbox" name="allergy" value="soy">
+                Soy
+            </label>
+
+            <button type="button" id="showMenu">Show Menu</button>
+
+            <p class="allergy-warning">
+                This is a demo allergy filter. Ingredient information is not verified.
+                If you have a food allergy, please check with cafe staff before ordering.
+            </p>
+
+        </div>
+
+        <!-- Food menu -->
+
+        <div id="menu-section" hidden>
+
+            <h2>Food and Drinks</h2>
+
+            <button type="button" id="changeAllergies">
+                Change Allergies
+            </button>
+
+            <p id="allergyMessage" class="allergy-warning" role="status"></p>
+
+            <div id="menu"></div>
+
+            <p id="menuMessage" class="message" role="status"></p>
+
+        </div>
+
     </main>
 
     <script src="scripts.js" defer></script>

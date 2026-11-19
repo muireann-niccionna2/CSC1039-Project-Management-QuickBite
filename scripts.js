@@ -55,6 +55,11 @@ function initLogin() {
     const password = document.getElementById("signupPassword").value;
     const confirm = document.getElementById("signupConfirm").value;
 
+    if (!/^[^@\s]+@mail\.dcu\.ie$/.test(email)) {
+      showMessage("Use your student email: name@mail.dcu.ie.", "error");
+      return;
+    }
+
     if (password.length < 6) {
       showMessage("Password must be at least 6 characters.", "error");
       return;
@@ -82,6 +87,10 @@ function initLogin() {
 
     const email = document.getElementById("loginEmail").value.trim().toLowerCase();
     const password = document.getElementById("loginPassword").value;
+    if (!/^[^@\s]+@mail\.dcu\.ie$/.test(email)) {
+      showMessage("Use your student email: name@mail.dcu.ie.", "error");
+      return;
+    }
     const user = getUsers().find(user => user.email === email && user.password === password);
 
     if (!user) {
@@ -130,6 +139,7 @@ function initMenu() {
     }
   ];
 
+  initStudentOrders();
   let menu = document.getElementById("menu");
 
   function updateCartCount() {
@@ -295,9 +305,13 @@ function initCheckout() {
     const number = 1001 + orders.length;
 
     let customer = "Guest";
+    let customerEmail = "";
     try {
       const user = JSON.parse(localStorage.getItem("qb_currentUser"));
-      if (user) customer = user.name;
+      if (user) {
+        customer = user.name;
+        customerEmail = user.email || "";
+      }
     } catch (e) {}
 
     orders.push({
@@ -305,10 +319,16 @@ function initCheckout() {
       items: cart,
       total: cartTotal(cart),
       customer: customer,
+      customerEmail: customerEmail,
       time: new Date().toLocaleTimeString(),
       status: "new"
     });
     localStorage.setItem("qb_orders", JSON.stringify(orders));
+    if (!customerEmail) {
+      const guestOrders = readList("qb_guestOrders");
+      guestOrders.push(number);
+      localStorage.setItem("qb_guestOrders", JSON.stringify(guestOrders));
+    }
     localStorage.removeItem("qb_cart");
 
     document.getElementById("orderNumber").textContent = "#" + number;
@@ -319,47 +339,120 @@ function initCheckout() {
   document.getElementById("payBtn").addEventListener("click", pay);
   showSummary();
 }
+
+// ========== Kitchen orders ==========
+
+function initSeeOrders() {
+  // Show checkout orders when available; otherwise retain the sample kitchen view.
+  const samples = [
+    {
+      id: 101,
+      food: "Chicken Sandwich",
+      quantity: 2,
+      total: 10.00,
+      status: "Pending"
+    },
+    {
+      id: 102,
+      food: "Cheeseburger and Coffee",
+      quantity: 2,
+      total: 10.50,
+      status: "Preparing"
+    },
+    {
+      id: 103,
+      food: "Chocolate Muffin",
+      quantity: 1,
+      total: 2.50,
+      status: "Ready"
+    }
+  ];
+
+  const savedOrders = readList("qb_orders");
+  const orders = savedOrders.length ? savedOrders.map(order => ({
+    id: order.number,
+    food: order.items.map(item => item.name).join(", "),
+    quantity: order.items.reduce((total, item) => total + item.qty, 0),
+    total: order.total,
+    status: orderStatus(order)
+  })) : samples;
+  const orderList = document.getElementById("orders");
+
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i];
+    const item = document.createElement("div");
+    item.className = "order-item";
+
+    const number = document.createElement("h3");
+    number.textContent = "Order #" + order.id;
+    const food = document.createElement("p");
+    food.textContent = "Food: " + order.food;
+    const quantity = document.createElement("p");
+    quantity.textContent = "Quantity: " + order.quantity;
+    const total = document.createElement("p");
+    total.textContent = "Total: €" + order.total.toFixed(2);
+    const status = document.createElement("p");
+    status.textContent = "Status: " + order.status;
+
+    if (order.status === "Pending") {
+      status.className = "pending";
+    } else if (order.status === "Preparing" || order.status === "In progress") {
+      status.className = "preparing";
+    } else {
+      status.className = order.status === "Cancelled" ? "cancelled" : "ready";
+    }
+
+    item.appendChild(number);
+    item.appendChild(food);
+    item.appendChild(quantity);
+    item.appendChild(total);
+    item.appendChild(status);
+    orderList.appendChild(item);
+  }
+}
+
 // ========== Staff log in ==========
- 
+
+
 function initStaffLogin() {
   // Staff don't sign up: the café manager creates their accounts.
   // Prototype only: demo accounts with plain-text passwords.
   const STAFF_ACCOUNTS = [
-    { name: "Aoife", email: "aoife@quickbite.ie", password: "cafe123" },
-    { name: "Conor", email: "conor@quickbite.ie", password: "cafe456" }
+    { name: "Aoife", email: "aoife@dcu.ie", password: "cafe123" },
+    { name: "Conor", email: "conor@dcu.ie", password: "cafe456" }
   ];
-  const STAFF_HOME = "orders.html";
- 
+  const STAFF_HOME = "prepare-orders.html";
+
   function showMessage(text, type) {
     const message = document.getElementById("message");
     message.textContent = text;
     message.className = "message " + type;
   }
- 
+
   function logIn(event) {
     event.preventDefault();
     const email = document.getElementById("loginEmail").value.trim().toLowerCase();
     const password = document.getElementById("loginPassword").value;
     const member = STAFF_ACCOUNTS.find(m => m.email === email && m.password === password);
- 
+
     if (!member) {
       showMessage("Incorrect email or password.", "error");
       return;
     }
- 
+
     localStorage.setItem("qb_currentStaff", JSON.stringify({ name: member.name, email: member.email }));
     showMessage("Welcome, " + member.name + "! Taking you to the orders...", "success");
     setTimeout(() => { window.location.href = STAFF_HOME; }, 1000);
   }
- 
+
   document.getElementById("loginForm").addEventListener("submit", logIn);
 }
 // ========== Home page ==========
- 
+
 function initHome() {
   // If someone is already logged in, offer a shortcut so they don't have to log in again.
   const message = document.getElementById("continueMessage");
- 
+
   function readUser(name) {
     try {
       return JSON.parse(localStorage.getItem(name));
@@ -367,20 +460,20 @@ function initHome() {
       return null;
     }
   }
- 
+
   const staff = readUser("qb_currentStaff");
   const student = readUser("qb_currentUser");
- 
+
   let text = "";
   let link = "";
   if (staff) {
     text = "Logged in as " + staff.name + " (staff). ";
-    link = "orders.html";
+    link = "prepare-orders.html";
   } else if (student) {
     text = "Logged in as " + student.name + ". ";
     link = "menu.html";
   }
- 
+
   if (link) {
     message.textContent = text;
     const continueLink = document.createElement("a");
@@ -390,6 +483,141 @@ function initHome() {
     message.classList.remove("hidden");
   }
 }
+
+// ========== Order preparation and student notifications ==========
+
+function readAccount(key) {
+  try {
+    const account = JSON.parse(localStorage.getItem(key));
+    return account && typeof account.email === "string" && account.email ? account : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function orderStatus(order) {
+  const statuses = {
+    new: "Pending", Pending: "Pending",
+    Preparing: "In progress", "In progress": "In progress",
+    Ready: "Ready", Cancelled: "Cancelled"
+  };
+  return statuses[order.status] || "Pending";
+}
+
+function makeOrderCard(order) {
+  const card = document.createElement("article");
+  card.className = "order-item";
+  const heading = document.createElement("h3");
+  heading.textContent = "Order #" + order.number;
+  card.appendChild(heading);
+  order.items.forEach(function (item) {
+    const line = document.createElement("p");
+    line.textContent = item.qty + " × " + item.name;
+    card.appendChild(line);
+  });
+  const total = document.createElement("p");
+  total.textContent = "Total: €" + order.total.toFixed(2);
+  card.appendChild(total);
+  const status = document.createElement("p");
+  status.className = "order-status " + orderStatus(order).toLowerCase().replace(" ", "-");
+  status.textContent = "Status: " + orderStatus(order);
+  card.appendChild(status);
+  return card;
+}
+
+function initPrepareOrders() {
+  const view = document.getElementById("prepareView");
+  const message = document.getElementById("prepareMessage");
+
+  function render() {
+    const staff = readAccount("qb_currentStaff");
+    view.classList.toggle("hidden", !staff);
+    document.getElementById("staffRequired").classList.toggle("hidden", !!staff);
+    const list = document.getElementById("prepareOrders");
+    list.innerHTML = "";
+    if (!staff) return;
+
+    const orders = readList("qb_orders");
+    document.getElementById("noOrders").classList.toggle("hidden", orders.length > 0);
+    orders.forEach(function (order) {
+      const card = makeOrderCard(order);
+      const customer = document.createElement("p");
+      customer.textContent = "Student: " + order.customer;
+      card.appendChild(customer);
+      const state = orderStatus(order);
+      if (state === "Ready") {
+        const note = document.createElement("p");
+        note.textContent = "Ready notification available on the student's menu page.";
+        card.appendChild(note);
+      }
+      if (state !== "Ready" && state !== "Cancelled") {
+        const actions = document.createElement("div");
+        actions.className = "order-actions";
+        ["In progress", "Ready", "Cancelled"].forEach(function (nextStatus) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = nextStatus === "Ready" ? "Mark ready & notify" : "Mark " + nextStatus.toLowerCase();
+          button.disabled = state === nextStatus;
+          button.setAttribute("aria-label", button.textContent + " for order " + order.number);
+          button.addEventListener("click", function () {
+            // Re-read before saving so updates to other orders in another tab survive.
+            if (!readAccount("qb_currentStaff")) { render(); return; }
+            const latest = readList("qb_orders");
+            const current = latest.find(item => item.number === order.number);
+            if (!current || ["Ready", "Cancelled"].includes(orderStatus(current))) {
+              message.textContent = "This order has changed. The list has been refreshed.";
+              render();
+              return;
+            }
+            current.status = nextStatus;
+            current.updatedAt = new Date().toISOString();
+            if (nextStatus === "Ready") current.notifiedAt = current.updatedAt;
+            localStorage.setItem("qb_orders", JSON.stringify(latest));
+            message.textContent = "Order #" + order.number + (nextStatus === "Ready"
+              ? " is ready. A collection notification is available on the student's menu page."
+              : " marked " + nextStatus.toLowerCase() + ".");
+            render();
+          });
+          actions.appendChild(button);
+        });
+        card.appendChild(actions);
+      }
+      list.appendChild(card);
+    });
+  }
+
+  render();
+  window.addEventListener("storage", render);
+  window.addEventListener("focus", render);
+}
+
+function initStudentOrders() {
+  function render() {
+    const student = readAccount("qb_currentUser");
+    const guestOrders = readList("qb_guestOrders");
+    const orders = readList("qb_orders").filter(order => student
+      ? order.customerEmail === student.email
+      : !order.customerEmail && guestOrders.includes(order.number));
+    document.getElementById("studentOrders").classList.toggle("hidden", orders.length === 0);
+    const list = document.getElementById("studentOrderList");
+    list.innerHTML = "";
+    orders.forEach(function (order) {
+      const card = makeOrderCard(order);
+      if (orderStatus(order) === "Ready") {
+        const notification = document.createElement("p");
+        notification.className = "ready-notification";
+        notification.textContent = "Your order #" + order.number + " is ready! Please collect it from the café.";
+        card.appendChild(notification);
+      }
+      list.appendChild(card);
+    });
+  }
+
+  render();
+  window.addEventListener("storage", render);
+  window.addEventListener("focus", render);
+}
+
 // ========== Page initialization ==========
 
 if (document.body.classList.contains("staff-login-page")) {
@@ -397,13 +625,15 @@ if (document.body.classList.contains("staff-login-page")) {
 } else if (document.body.classList.contains("login-page")) {
   initLogin();
 } else if (document.body.classList.contains("menu-page")) {
+  initMenu();
 } else if (document.body.classList.contains("cart-page")) {
   initCart();
 } else if (document.body.classList.contains("payment-page")) {
   initCheckout();
-}
- else if (document.body.classList.contains("payment-page")) {
-  initCheckout();
+} else if (document.body.classList.contains("prepare-orders-page")) {
+  initPrepareOrders();
+} else if (document.body.classList.contains("see-orders-page")) {
+  initSeeOrders();
 } else if (document.body.classList.contains("home-page")) {
   initHome();
 }

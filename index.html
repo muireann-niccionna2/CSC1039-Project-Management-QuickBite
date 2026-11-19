@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite – Welcome</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="home-page">
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-logo">
+        <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="payment.html">Payment</a>
+      <a href="see-orders.html">See orders</a>
+      <a href="prepare-orders.html">Prepare orders</a>
+      <a href="login.html">Student log in</a>
+      <a href="staff-login.html">Staff log in</a>
+    </div>
+  </nav>
+
+  <main class="home-content">
+    <h1>Welcome to QuickBite</h1>
+    <p class="tagline">Order ahead. Skip the queue. Who are you?</p>
+
+    <div class="choices">
+      <a href="login.html" class="choice-card">
+        <span class="choice-icon" aria-hidden="true">🎓</span>
+        <span class="choice-title">I'm a student</span>
+        <span class="choice-text">Log in or sign up to order food</span>
+      </a>
+      <a href="staff-login.html" class="choice-card">
+        <span class="choice-icon" aria-hidden="true">🍳</span>
+        <span class="choice-title">I'm café staff</span>
+        <span class="choice-text">Log in to see and manage orders</span>
+      </a>
+    </div>
+
+    <p id="continueMessage" class="continue hidden"></p>
+  </main>
+
+  <script src="scripts.js" defer></script>
+</body>
+</html>

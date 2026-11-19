@@ -6,17 +6,21 @@
   <title>QuickBite – Staff Log in</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<!-- "login-page" reuses the login styles from styles.css.
-     "staff-login-page" tells scripts.js to run the staff login code instead of the student one. -->
 <body class="login-page staff-login-page">
 
   <nav class="site-nav" aria-label="Main navigation">
-    <a href="staff-login.html" class="nav-brand">
+    <a href="index.html" class="nav-brand">
       <span class="nav-logo">
         <img src="images/quickbite-logo.png" alt="QuickBite" width="3336" height="1864">
       </span>
     </a>
     <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="cart.html">Cart</a>
+      <a href="payment.html">Payment</a>
+      <a href="see-orders.html">See orders</a>
+      <a href="prepare-orders.html">Prepare orders</a>
       <a href="login.html">Student log in</a>
       <a href="staff-login.html" aria-current="page">Staff log in</a>
     </div>
@@ -27,23 +31,22 @@
       <h1>QuickBite Staff</h1>
       <p class="tagline">Log in with the account the café manager gave you.</p>
 
-      <!-- Staff only log in. Accounts are created by the manager, so there is no sign-up. -->
+      <!-- Staff accounts are created by the manager, so there is no sign-up. -->
       <form id="loginForm">
         <label>Staff email
-          <input type="email" id="loginEmail" placeholder="name@quickbite.ie" required>
+          <input type="email" id="loginEmail" placeholder="name@dcu.ie" autocomplete="username" required>
         </label>
         <label>Password
-          <input type="password" id="loginPassword" required>
+          <input type="password" id="loginPassword" autocomplete="current-password" required>
         </label>
         <button type="submit" class="submit">Log in</button>
       </form>
 
-      <p id="message" class="message"></p>
+      <p id="message" class="message" role="status"></p>
       <p class="tagline"><a href="login.html">Not staff? Student log in</a></p>
     </div>
   </main>
 
   <script src="scripts.js" defer></script>
-
 </body>
 </html>
