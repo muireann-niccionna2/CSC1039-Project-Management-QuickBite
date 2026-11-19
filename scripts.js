@@ -112,93 +112,281 @@ function initLogin() {
 // ========== Cafe menu ==========
 
 function initMenu() {
+
   let foods = [
     {
       id: 1,
       name: "Chicken Sandwich",
       price: 5.00,
-      available: true
+      available: true,
+      allergens: ["wheat", "eggs"]
     },
     {
       id: 2,
       name: "Cheeseburger",
       price: 7.50,
-      available: true
+      available: true,
+      allergens: ["milk", "wheat"]
     },
     {
       id: 3,
       name: "Coffee",
       price: 3.00,
-      available: true
+      available: true,
+      allergens: []
     },
     {
       id: 4,
       name: "Chocolate Muffin",
       price: 2.50,
-      available: false
+      available: false,
+      allergens: ["milk", "eggs", "wheat"]
     }
   ];
 
+  // These allergens are examples for the project.
+  // They are not verified cafe ingredient information.
+
   initStudentOrders();
+
   let menu = document.getElementById("menu");
 
+  let allergySection = document.getElementById("allergy-section");
+  let menuSection = document.getElementById("menu-section");
+
+  let showMenuButton = document.getElementById("showMenu");
+  let changeAllergiesButton = document.getElementById("changeAllergies");
+
   function updateCartCount() {
-    const count = readList("qb_cart").reduce((total, item) => total + item.qty, 0);
+
+    const count = readList("qb_cart").reduce(
+      (total, item) => total + item.qty, 0
+    );
+
     document.getElementById("cartCount").textContent = count;
   }
 
   updateCartCount();
 
-  for (let i = 0; i < foods.length; i++) {
+  // Display the menu
 
-    let food = foods[i];
+  function displayMenu() {
 
-    let item = document.createElement("div");
-    item.className = "food-item";
+    menu.innerHTML = "";
 
-    let name = document.createElement("h3");
-    name.textContent = food.name;
+    let selectedAllergies = [];
 
-    let price = document.createElement("p");
-    price.className = "price";
-    price.textContent = "€" + food.price.toFixed(2);
+    let checkboxes = document.querySelectorAll(
+      'input[name="allergy"]:checked'
+    );
 
-    let status = document.createElement("p");
-
-    if (food.available == true) {
-      status.textContent = "Available";
-      status.className = "available";
-    } else {
-      status.textContent = "Sold Out";
-      status.className = "sold-out";
+    for (let i = 0; i < checkboxes.length; i++) {
+      selectedAllergies.push(checkboxes[i].value);
     }
 
-    item.appendChild(name);
-    item.appendChild(price);
-    item.appendChild(status);
+    let hiddenFoods = 0;
 
-    const addButton = document.createElement("button");
-    addButton.type = "button";
-    addButton.className = "add-button";
-    addButton.textContent = food.available ? "Add to cart" : "Sold out";
-    addButton.disabled = !food.available;
-    addButton.addEventListener("click", function () {
-      if (!food.available) return;
+    for (let i = 0; i < foods.length; i++) {
 
-      const cart = readList("qb_cart");
-      const existing = cart.find(item => item.name === food.name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ name: food.name, price: food.price, qty: 1 });
+      let food = foods[i];
+
+      let containsAllergy = false;
+
+      for (let j = 0; j < selectedAllergies.length; j++) {
+
+        if (food.allergens.includes(selectedAllergies[j])) {
+          containsAllergy = true;
+        }
+
       }
-      saveCart(cart);
-      updateCartCount();
-      document.getElementById("menuMessage").textContent = food.name + " added to your cart.";
-    });
-    item.appendChild(addButton);
-    menu.appendChild(item);
+
+      if (containsAllergy) {
+        hiddenFoods++;
+        continue;
+      }
+
+      let item = document.createElement("div");
+      item.className = "food-item";
+
+      let name = document.createElement("h3");
+      name.textContent = food.name;
+
+      let price = document.createElement("p");
+      price.className = "price";
+      price.textContent = "€" + food.price.toFixed(2);
+
+      let status = document.createElement("p");
+
+      if (food.available == true) {
+        status.textContent = "Available";
+        status.className = "available";
+      } else {
+        status.textContent = "Sold Out";
+        status.className = "sold-out";
+      }
+
+      let allergens = document.createElement("p");
+
+      if (food.allergens.length === 0) {
+        allergens.textContent = "Listed allergens: None";
+      } else {
+        allergens.textContent = "Listed allergens: " + food.allergens.join(", ");
+      }
+
+      item.appendChild(name);
+      item.appendChild(price);
+      item.appendChild(status);
+      item.appendChild(allergens);
+
+      // Add to cart button
+
+      const addButton = document.createElement("button");
+
+      addButton.type = "button";
+      addButton.className = "add-button";
+
+      addButton.textContent = food.available ? "Add to cart" : "Sold out";
+
+      addButton.disabled = !food.available;
+
+      addButton.addEventListener("click", function () {
+
+        if (!food.available) {
+          return;
+        }
+
+        const cart = readList("qb_cart");
+
+        const existing = cart.find(item => item.name === food.name);
+
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({
+            name: food.name,
+            price: food.price,
+            qty: 1
+          });
+        }
+
+        saveCart(cart);
+
+        updateCartCount();
+
+        document.getElementById("menuMessage").textContent =
+          food.name + " added to your cart.";
+
+      });
+
+      item.appendChild(addButton);
+
+      menu.appendChild(item);
+    }
+
+    // Show a message if some foods were filtered out
+
+    let allergyMessage = document.getElementById("allergyMessage");
+
+    if (selectedAllergies.length > 0) {
+
+      allergyMessage.textContent =
+        hiddenFoods + " food item(s) hidden based on your selected allergies. " +
+        "This filter does not guarantee food is allergen-free. " +
+        "Please check ingredients and cross-contact risks with cafe staff.";
+
+    } else {
+
+      allergyMessage.textContent =
+        "All menu items are shown. Allergen information is for demonstration only.";
+
+    }
+
+    if (menu.children.length === 0) {
+
+      let message = document.createElement("p");
+
+      message.textContent =
+        "No food items match your selected allergies.";
+
+      menu.appendChild(message);
+    }
+
+    // Show the menu and hide the questions
+
+    allergySection.hidden = true;
+    menuSection.hidden = false;
+
   }
+
+  // When the student clicks Show Menu
+
+  showMenuButton.addEventListener("click", function () {
+
+    // Check whether existing cart items conflict with selected allergies
+
+    let selectedAllergies = [];
+
+    let checkboxes = document.querySelectorAll(
+      'input[name="allergy"]:checked'
+    );
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      selectedAllergies.push(checkboxes[i].value);
+    }
+
+    let cart = readList("qb_cart");
+
+    let conflictingItems = [];
+
+    for (let i = 0; i < cart.length; i++) {
+
+      let cartItem = cart[i];
+
+      let food = foods.find(item => item.name === cartItem.name);
+
+      if (!food) {
+        continue;
+      }
+
+      for (let j = 0; j < selectedAllergies.length; j++) {
+
+        if (food.allergens.includes(selectedAllergies[j])) {
+
+          if (!conflictingItems.includes(food.name)) {
+            conflictingItems.push(food.name);
+          }
+
+        }
+
+      }
+
+    }
+
+    if (conflictingItems.length > 0) {
+
+      alert(
+        "Warning! Your cart contains food that matches your selected allergies: " +
+        conflictingItems.join(", ") +
+        ". Please review and remove these items from your cart before ordering."
+      );
+
+    }
+
+    displayMenu();
+
+  });
+
+  // When the student clicks Change Allergies
+
+  changeAllergiesButton.addEventListener("click", function () {
+
+    menuSection.hidden = true;
+    allergySection.hidden = false;
+
+    document.getElementById("menuMessage").textContent = "";
+
+  });
+
 }
 
 // ========== Cart ==========
